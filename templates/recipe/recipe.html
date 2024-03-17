@@ -11,7 +11,19 @@
       <div class="col-lg-6">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">{{ recipe.name }}</h1>
       
-        
+        <div class="pb-2">
+            <form method="post" action="{% url 'make-favorite-recipe' recipe.id %}">
+                {% csrf_token %}
+                {% if recipe.id in favorites_ids %}
+                    <input hidden name="favorite" type="text" value="no">
+                    <button type="submit" class="btn btn-warning">Убрать из избранного</button>
+                {% else %}
+                    <input hidden name="favorite" type="text" value="yes">
+                    <button type="submit" class="btn btn-primary">В избранное</button>
+                {% endif %}
+            </form>
+        </div>
+      
         <h5 class="">Время приготовления: {{ recipe.time_minutes }} мин.</h5>
         {% include 'recipe/category.html' with category=recipe.category %}
         <div>
