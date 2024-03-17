@@ -17,13 +17,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from app.views import home
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 
 urlpatterns = [
     path('', home, name="home"),
     path('admin/', admin.site.urls),
     path("api/recipes/", include("app.api.urls")),
-    # связь с приложением 'app':
+    # Token
+    path("api/auth/", include("djoser.urls.authtoken")),
+    # path("api/auth/", include("djoser.urls")),  # Чтобы заработали прописанные в документации urls (/me и т.д.)
+    path("api/auth/", include("djoser.urls.jwt")),
+    path("api/auth/", include("djoser.urls.base")),
+    # JWT
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    # Other
+    # связь с приложением 'users':
     path("account/", include('users.urls')),  # Если в url будет 'account/', то перейдёт (include) в 'users.urls'
     # связь с приложением 'app'
     path("recipe/", include('app.urls')),
